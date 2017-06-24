@@ -1,0 +1,21 @@
+EXAMPLE
+
+COMMENT Comment
+
+VARIABLE variable EQUALS INTEGER 3
+VARIABLE variable2 EQUALS STRING hello
+VARIABLE variable3 EQUALS BOOLEAN False
+
+PRINT variable
+
+IF variable IDENTICAL 3 THEN COMMENT Inline Comment
+	PRINT variable
+ENDIF
+
+IF variable NOT IDENTICAL 3 THEN
+	PRINT variable
+ELSE
+	PRINT variable2
+ENDIF
+
+EXIT
