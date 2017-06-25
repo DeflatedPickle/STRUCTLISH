@@ -8,11 +8,13 @@ VARIABLE variable3 EQUALS BOOLEAN False
 
 PRINT variable
 
-IF variable IDENTICAL 3 THEN COMMENT Inline Comment
+IF variable IDENTICAL TO 3 THEN COMMENT Inline Comment
 	PRINT variable
 ENDIF
 
-IF variable NOT IDENTICAL 3 THEN
+IF variable NOT IDENTICAL TO 3 THEN
+	PRINT variable
+ELSE IF variable2 IDENTICAL TO 3 THEN
 	PRINT variable
 ELSE
 	PRINT variable2

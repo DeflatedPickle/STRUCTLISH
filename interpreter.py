@@ -52,8 +52,14 @@ class Interpreter(object):
             if "NOT" in line:
                 self.quick_print("-NOT", number)
 
-            if "IDENTICAL" in line:
-                self.quick_print("-IDENTICAL", number)
+            if "IDENTICAL TO" in line:
+                self.quick_print("-IDENTICAL TO", number)
+
+            elif "MORE THAN" in line:
+                self.quick_print("-MORE THAN", number)
+
+            elif "LESS THAN" in line:
+                self.quick_print("-LESS THAN", number)
 
             if "THEN" in line:
                 self.quick_print("-THEN", number)
@@ -62,10 +68,13 @@ class Interpreter(object):
                 if item.startswith("ENDIF"):
                     self.quick_print("ENDIF", count)
 
+                elif item.startswith("ELSE IF"):
+                    self.quick_print("|ELSE IF", count)
+                    self.syntax(item, count)
+
                 elif item.startswith("ELSE"):
                     self.quick_print("|ELSE", count)
-                    for count1, item1 in self.read_lines_enum:
-                        self.syntax(item1, count1)
+                    self.syntax(item, count)
 
                 else:
                     self.syntax(item, count)
