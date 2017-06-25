@@ -2,22 +2,20 @@ EXAMPLE
 
 COMMENT Comment
 
-VARIABLE variable EQUALS INTEGER 3
-VARIABLE variable2 EQUALS STRING hello
-VARIABLE variable3 EQUALS BOOLEAN False
+VARIABLE my_number EQUALS INTEGER 3
 
-PRINT variable
+PRINT VARIABLE my_number
+PRINT STRING hello there
 
-IF variable IDENTICAL TO 3 THEN COMMENT Inline Comment
-	PRINT variable
+IF INTEGER 5 NOT IDENTICAL TO INTEGER 3 THEN
+	PRINT STRING 5 is not the same as 3.
+	IF STRING hello IDENTICAL TO STRING hello THEN
+		PRINT STRING Nested IF statements work.
+	ENDIF
 ENDIF
 
-IF variable NOT IDENTICAL TO 3 THEN
-	PRINT variable
-ELSE IF variable2 IDENTICAL TO 3 THEN
-	PRINT variable
-ELSE
-	PRINT variable2
+IF VARIABLE my_number IDENTICAL TO INTEGER 3 THEN
+	PRINT STRING This number is the same as this variable.
 ENDIF
 
 EXIT

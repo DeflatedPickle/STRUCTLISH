@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 """"""
 
+from sys import exit
+
 __title__ = "Interpreter"
 __author__ = "DeflatedPickle"
-__version__ = "1.0.0"
+__version__ = "1.4.0"
 
 
 class Interpreter(object):
@@ -20,6 +22,8 @@ class Interpreter(object):
 
         self.metadata = {"name": None}
 
+        self.variable_dictionary = {}
+
         self.main_loop()
 
     def main_loop(self):
@@ -30,76 +34,157 @@ class Interpreter(object):
             # print(count + 1, item)
 
     def syntax(self, line, number):
+        line_split = line.split(" ")
+
         if not self.flag_start:
             self.flag_start = True
-            print("Interpreting: {}.".format(self.metadata["name"]))
-
-        if line.endswith(""):
-            print("")
+            print("Started Interpreting: {}.\n".format(self.metadata["name"]))
 
         if "COMMENT" in line:
-            self.quick_print("COMMENT", number)
+            # self.quick_print("COMMENT", number)
+            index = line_split.index("COMMENT")
+            del line_split[index:]
 
         if line.startswith("EXIT"):
-            self.quick_print("EXIT", number)
+            # self.quick_print("EXIT", number)
+            print("\nFinished Interpreting: {}.".format(self.metadata["name"]))
+            exit()
+
+        elif "PASS" in line:
+            # self.quick_print("PASS", number)
+            pass
 
         elif "PRINT" in line:
-            self.quick_print("PRINT", number)
+            # self.quick_print("PRINT", number)
+            is_variable = False
+
+            if "VARIABLE" in line:
+                is_variable = True
+
+            print_type, print_value = self.work_out_type(line, number, line_split[-1])
+
+            if is_variable:
+                print(self.variable_dictionary[print_value]["value"])
+
+            else:
+                print(" ".join(line_split[2:]))
 
         elif line.startswith("IF"):
-            self.quick_print("IF", number)
+            # self.quick_print("IF", number)
+            variable_type, variable_value = self.work_out_type(line, number, line_split[2])
+            value_type, value_value = self.work_out_type(line, number, line_split[-2])
+
+            if "VARIABLE" in line_split[1]:
+                is_variable_a_variable = True
+
+            else:
+                is_variable_a_variable = False
+
+            if "VARIABLE" in line_split[line_split.index(str(value_value)) - 1]:
+                is_value_a_variable = True
+
+            else:
+                is_value_a_variable = False
+
+            is_not = False
+            compare = ""
 
             if "NOT" in line:
-                self.quick_print("-NOT", number)
+                # self.quick_print("-NOT", number)
+                is_not = True
 
             if "IDENTICAL TO" in line:
-                self.quick_print("-IDENTICAL TO", number)
+                # self.quick_print("-IDENTICAL TO", number)
+                compare = "IDENTICAL TO"
 
             elif "MORE THAN" in line:
-                self.quick_print("-MORE THAN", number)
+                # self.quick_print("-MORE THAN", number)
+                compare = "MORE THAN"
 
             elif "LESS THAN" in line:
-                self.quick_print("-LESS THAN", number)
+                # self.quick_print("-LESS THAN", number)
+                compare = "LESS THAN"
 
             if "THEN" in line:
-                self.quick_print("-THEN", number)
+                # self.quick_print("-THEN", number)
+                pass
 
             for count, item in self.read_lines_enum:
                 if item.startswith("ENDIF"):
-                    self.quick_print("ENDIF", count)
+                    # self.quick_print("ENDIF", count)
+                    pass
 
                 elif item.startswith("ELSE IF"):
-                    self.quick_print("|ELSE IF", count)
+                    # self.quick_print("|ELSE IF", count)
                     self.syntax(item, count)
 
                 elif item.startswith("ELSE"):
-                    self.quick_print("|ELSE", count)
+                    # self.quick_print("|ELSE", count)
                     self.syntax(item, count)
 
                 else:
-                    self.syntax(item, count)
+                    if is_variable_a_variable:
+                        current_variable = self.variable_dictionary[variable_value]["value"]
+
+                    else:
+                        current_variable = variable_value
+
+                    if is_value_a_variable:
+                        current_value = self.variable_dictionary[value_value]["value"]
+
+                    else:
+                        current_value = value_value
+
+                    if compare == "IDENTICAL TO":
+                        if is_not:
+                            if current_variable != current_value:
+                                self.syntax(item, count)
+
+                        else:
+                            if current_variable == current_value:
+                                self.syntax(item, count)
 
         # TODO: Add FOR loops.
 
         # TODO: Add WHILE loops.
 
         elif "VARIABLE" in line:
-            self.quick_print("VARIABLE", number)
+            # self.quick_print("VARIABLE", number)
+            variable_name = line_split[1]
+            variable_type = None
+            variable_value = None
 
             if "EQUALS" in line:
-                self.quick_print("-EQUALS", number)
+                # self.quick_print("-EQUALS", number)
+                variable_type, variable_value = self.work_out_type(line, number, line_split[-1])
 
-                if "STRING" in line:
-                    self.quick_print("--STRING", number)
+            self.variable_dictionary[variable_name] = {"type": variable_type, "value": variable_value}
 
-                elif "INTEGER" in line:
-                    self.quick_print("--INTEGER", number)
+    def work_out_type(self, line, number, variable_value):
+        variable_type = None
+        line_split = line.split(" ")
 
-                elif "BOOLEAN" in line:
-                    self.quick_print("--BOOLEAN", number)
+        if "STRING" in line_split[line_split.index(variable_value) - 1]:
+            # self.quick_print("--STRING", number)
+            variable_type = "STRING"
+            variable_value = str(variable_value)
 
-                elif "FLOAT" in line:
-                    self.quick_print("--FLOAT", number)
+        elif "INTEGER" in line_split[line_split.index(variable_value) - 1]:
+            # self.quick_print("--INTEGER", number)
+            variable_type = "INTEGER"
+            variable_value = int(variable_value)
+
+        elif "BOOLEAN" in line_split[line_split.index(variable_value) - 1]:
+            # self.quick_print("--BOOLEAN", number)
+            variable_type = "BOOLEAN"
+            variable_value = bool(variable_value)
+
+        elif "FLOAT" in line_split[line_split.index(variable_value) - 1]:
+            # self.quick_print("--FLOAT", number)
+            variable_type = "FLOAT"
+            variable_value = float(variable_value)
+
+        return variable_type, variable_value
 
     def quick_print(self, *args):
         print("{} on line: {}.".format(args[0], args[1] + 1))
