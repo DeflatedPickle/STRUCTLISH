@@ -1,21 +1,15 @@
 EXAMPLE
 
-COMMENT Comment
-
-VARIABLE my_number EQUALS INTEGER 3
-
-PRINT VARIABLE my_number
-PRINT STRING hello there
-
-IF INTEGER 5 NOT IDENTICAL TO INTEGER 3 THEN
-	PRINT STRING 5 is not the same as 3.
-	IF STRING hello IDENTICAL TO STRING hello THEN
-		PRINT STRING Nested IF statements work.
-	ENDIF
+IF INTEGER 3 IDENTICAL TO INTEGER 3 THEN
+	PRINT STRING This number is identical to this other variable.
 ENDIF
 
-IF VARIABLE my_number IDENTICAL TO INTEGER 3 THEN
-	PRINT STRING This number is the same as this variable.
+IF INTEGER 5 MORE THAN INTEGER 3 THEN
+	PRINT STRING This number is more than this other number.
+ENDIF
+
+IF INTEGER 3 LESS THAN INTEGER 5 THEN
+	PRINT STRING This number is less than this other number.
 ENDIF
 
 EXIT

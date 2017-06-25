@@ -6,7 +6,7 @@ from sys import exit
 
 __title__ = "Interpreter"
 __author__ = "DeflatedPickle"
-__version__ = "1.4.0"
+__version__ = "1.5.1"
 
 
 class Interpreter(object):
@@ -112,7 +112,7 @@ class Interpreter(object):
             for count, item in self.read_lines_enum:
                 if item.startswith("ENDIF"):
                     # self.quick_print("ENDIF", count)
-                    pass
+                    break
 
                 elif item.startswith("ELSE IF"):
                     # self.quick_print("|ELSE IF", count)
@@ -143,6 +143,14 @@ class Interpreter(object):
                         else:
                             if current_variable == current_value:
                                 self.syntax(item, count)
+
+                    elif compare == "MORE THAN":
+                        if current_variable > current_value:
+                            self.syntax(item, count)
+
+                    elif compare == "LESS THAN":
+                        if current_variable < current_value:
+                            self.syntax(item, count)
 
         # TODO: Add FOR loops.
 
