@@ -1,7 +1,7 @@
 EXAMPLE
 
 IF INTEGER 3 IDENTICAL TO INTEGER 3 THEN
-	PRINT STRING This number is identical to this other variable.
+	PRINT STRING This number is identical to this other number.
 ENDIF
 
 IF INTEGER 5 MORE THAN INTEGER 3 THEN
