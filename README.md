@@ -40,6 +40,20 @@ Example:
 COMMENT This is a comment.
 ```
 
+### Commands:
+STRUCTLISH provides commands for you to use in your scripts.
+#### PRINT:
+This command will print given information to the terminal.
+
+Example:
+```
+PRINT INTEGER 3
+```
+Output:
+```
+3
+```
+
 ### Variables:
 Like many languages, STRUCTLISH can handle setting and using variables.
 
@@ -56,17 +70,31 @@ The `IF` statement will compare if the values you provide fit together through t
 Example:
 ```
 IF INTEGER 3 IDENTICAL TO INTEGER 3 THEN
+	PRINT INTEGER 3
 ENDIF
 ```
+Output:
+```
+3
+```
 
-### Commands:
-STRUCTLISH provides commands for you to use in your scripts.
-#### PRINT:
-This command will print given information to the terminal.
+### Loops:
+#### FOR:
+The `FOR` loop will continue to run till it's objective is satisfied.
 
 Example:
 ```
-PRINT INTEGER 3
+FOR VARIABLE i IN RANGE 0 TO 5
+	PRINT VARIABLE i
+ENDFOR
+```
+Output:
+```
+0
+1
+2
+3
+4
 ```
 
 ## Example STRUCTLISH Script:

@@ -6,7 +6,7 @@ from sys import exit
 
 __title__ = "Interpreter"
 __author__ = "DeflatedPickle"
-__version__ = "1.5.1"
+__version__ = "1.6.1"
 
 
 class Interpreter(object):
@@ -74,18 +74,8 @@ class Interpreter(object):
             variable_type, variable_value = self.work_out_type(line, number, line_split[2])
             value_type, value_value = self.work_out_type(line, number, line_split[-2])
 
-            if "VARIABLE" in line_split[1]:
-                is_variable_a_variable = True
-
-            else:
-                is_variable_a_variable = False
-
-            if "VARIABLE" in line_split[line_split.index(str(value_value)) - 1]:
-                is_value_a_variable = True
-
-            else:
-                is_value_a_variable = False
-
+            is_variable_a_variable = self.is_variable(line_split, variable_value)
+            is_value_a_variable = self.is_variable(line_split, value_value)
             is_not = False
             compare = ""
 
@@ -154,6 +144,47 @@ class Interpreter(object):
 
         # TODO: Add FOR loops.
 
+        elif "FOR" in line:
+            # self.quick_print("FOR", number)
+            variable_type, variable_value = self.work_out_type(line, number, line_split[2])
+            value_type, value_value = self.work_out_type(line, number, line_split[-2])
+
+            is_variable_a_variable = self.is_variable(line_split, variable_value)
+            is_value_a_variable = self.is_variable(line_split, value_value)
+            is_in = False
+            in_what = ""
+
+            value_from = 0
+            value_to = 0
+
+            self.variable_dictionary[variable_value] = {"type": variable_type, "value": None}
+
+            if "IN" in line:
+                is_in = True
+
+            if "RANGE" in line:
+                in_what = "RANGE"
+                try:
+                    value_from = int(line_split[line_split.index("TO") - 1])
+                    value_to = int(line_split[line_split.index("TO") + 1])
+
+                except ValueError:
+                    value_from = 0
+                    value_to = int(line_split[-1])
+
+            for count, item in self.read_lines_enum:
+                if item.startswith("ENDFOR"):
+                    # self.quick_print("ENDFOR", count)
+                    break
+
+                else:
+                    if in_what == "RANGE":
+                        for variable in range(value_from, value_to):
+                            self.variable_dictionary[variable_value]["value"] = variable
+                            self.syntax(item, count)
+
+                        del self.variable_dictionary[variable_value]
+
         # TODO: Add WHILE loops.
 
         elif "VARIABLE" in line:
@@ -167,6 +198,13 @@ class Interpreter(object):
                 variable_type, variable_value = self.work_out_type(line, number, line_split[-1])
 
             self.variable_dictionary[variable_name] = {"type": variable_type, "value": variable_value}
+
+    def is_variable(self, line, value):
+        if "VARIABLE" in line[line.index(str(value)) - 1]:
+            return True
+
+        else:
+            return False
 
     def work_out_type(self, line, number, variable_value):
         variable_type = None
