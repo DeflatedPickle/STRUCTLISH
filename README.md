@@ -16,6 +16,7 @@ However, if you look in the "Language Files", you'll find the language files I h
 
 #### Currently Supported Editors/IDEs:
 - Notepad++
+- UltraEdit
 
 ## Basic Rules of STRUCTLISH:
 - A name must be provided at the top of the script.

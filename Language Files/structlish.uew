@@ -1,0 +1,44 @@
+/L16"STRUCTLISH" Nocase Line Comment = COMMENT File Extensions = STRE
+
+/LanguageMarker = "structlish"
+
+/Regexp Type = Perl
+
+/Indent Strings = "THEN"
+
+/C1"Keywords" STYLE_KEYWORD
+IF
+ENDIF
+FOR
+ENDFOR
+
+THEN
+
+PASS
+NEWLINE
+
+/C2"Data Types"
+VARIABLE
+STRING
+INTEGER
+BOOLEAN
+FLOAT
+
+
+/C3"Built-in Functions" STYLE_FUNCTIONS
+PRINT
+RANGE
+
+/C4"Operators" STYLE_OPERATOR
+NOT
+IN
+
+IDENTICAL TO
+MORE THAN
+LESS THAN
+
+TO
+
+/C5"Others"
+PROGRAM
+EXIT
