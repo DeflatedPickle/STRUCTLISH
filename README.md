@@ -5,6 +5,18 @@ A slightly modified version of Structured English written in Python.
 STRUCTLISH is a simple esoteric programming language designed to be easy to read and understand.
 It follows many of the rules set by Structured English, and is inspired by it.
 
+## Using STRUCTLISH:
+If you'd like to use STRUCTLISH, download this repository, edit the example script and run `interpreter.py`.
+In the future, this will obviously be changed.
+
+### Syntax Highlighting:
+Most programmers are used to having the syntax of a language be highlighted in their Editor/IDE.
+Since STRUCTLISH is a ;new, small, unpopular language, no IDE natively supports it.
+However, if you look in the "Language Files", you'll find the language files I have made for some Editors/IDEs.
+
+#### Currently Supported Editors/IDEs:
+- Notepad++
+
 ## Basic Rules of STRUCTLISH:
 - A name must be provided at the top of the script.
 - Keywords must be capitalised.
@@ -14,6 +26,8 @@ It follows many of the rules set by Structured English, and is inspired by it.
 
 ## Style Guide:
 - Indent content of statements by one level.
+- Use only lowercase for variables.
+- Separate words in variables with underscores (`my_variable`).
 
 ## What Can STRUCTLISH do?
 ### Data Types:
