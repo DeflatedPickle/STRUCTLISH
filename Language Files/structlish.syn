@@ -1,0 +1,58 @@
+C=1
+
+[Syntax]
+Namespace1 = 6
+IgnoreCase = No
+InitKeyWordChars = A-Za-z_
+KeyWordChars = A-Za-z0-9_
+BracketChars =
+PreprocStart =
+SyntaxStart =
+SyntaxEnd =
+CommentStart =
+CommentEnd =
+SingleComment = COMMENT
+SingleCommentCol =
+SingleCommentAlt =
+SingleCommentColAlt =
+SingleCommentEsc =
+StringsSpanLines = Yes
+StringStart =
+StringEnd =
+StringEsc =
+CharStart =
+CharEnd =
+CharEsc =
+
+[Keywords 1]
+IF
+ENDIF
+FOR
+ENDFOR
+THEN
+PASS
+NEWLINE
+
+[Keywords 2]
+VARIABLE
+STRING
+INTEGER
+BOOLEAN
+FLOAT
+
+[Keywords 3]
+PRINT
+RANGE
+
+[Keywords 4]
+NOT
+IN
+
+IDENTICAL TO
+MORE THAN
+LESS THAN
+TO
+
+[Keywords 5]
+PROGRAM
+EXIT
