@@ -84,7 +84,7 @@ The `FOR` loop will continue to run till it's objective is satisfied.
 
 Example:
 ```
-FOR VARIABLE i IN RANGE 0 TO 5
+FOR VARIABLE i IN RANGE 0 TO 5 THEN
 	PRINT VARIABLE i
 ENDFOR
 ```
@@ -99,7 +99,7 @@ Output:
 
 ## Example STRUCTLISH Script:
 ```
-EXAMPLE
+PROGRAM EXAMPLE
 
 VARIABLE my_variable EQUALS 3
 

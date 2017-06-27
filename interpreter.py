@@ -6,7 +6,7 @@ from sys import exit
 
 __title__ = "Interpreter"
 __author__ = "DeflatedPickle"
-__version__ = "1.6.1"
+__version__ = "1.8.2"
 
 
 class Interpreter(object):
@@ -24,20 +24,36 @@ class Interpreter(object):
 
         self.variable_dictionary = {}
 
+        self.current_line = None
+        self.current_line_split = None
+        self.current_line_number = 0
+
+        self.found_variable = False
+        self.found_value = False
+
         self.main_loop()
 
     def main_loop(self):
-        self.metadata["name"] = self.read_lines_stripped[0]
-
         for count, item in self.read_lines_enum:
             self.syntax(item, count)
             # print(count + 1, item)
 
     def syntax(self, line, number):
+        self.current_line = line
+        self.current_line_split = line.split(" ")
+        self.current_line_number = number
+
+        self.found_variable = False
+        self.found_value = False
+
         line_split = line.split(" ")
 
         if not self.flag_start:
             self.flag_start = True
+
+            if "PROGRAM" in line:
+                self.metadata["name"] = " ".join(line_split[1:])
+
             print("Started Interpreting: {}.\n".format(self.metadata["name"]))
 
         if "COMMENT" in line:
@@ -61,7 +77,7 @@ class Interpreter(object):
             if "VARIABLE" in line:
                 is_variable = True
 
-            print_type, print_value = self.work_out_type(line, number, line_split[-1])
+            print_type, print_value = self.work_out_type(line, number)
 
             if is_variable:
                 print(self.variable_dictionary[print_value]["value"])
@@ -69,10 +85,13 @@ class Interpreter(object):
             else:
                 print(" ".join(line_split[2:]))
 
+        elif "NEWLINE" in line:
+            print("")
+
         elif line.startswith("IF"):
             # self.quick_print("IF", number)
-            variable_type, variable_value = self.work_out_type(line, number, line_split[2])
-            value_type, value_value = self.work_out_type(line, number, line_split[-2])
+            variable_type, variable_value = self.work_out_type(line, number)
+            value_type, value_value = self.work_out_type(line, number)
 
             is_variable_a_variable = self.is_variable(line_split, variable_value)
             is_value_a_variable = self.is_variable(line_split, value_value)
@@ -142,27 +161,27 @@ class Interpreter(object):
                         if current_variable < current_value:
                             self.syntax(item, count)
 
-        # TODO: Add FOR loops.
-
         elif "FOR" in line:
             # self.quick_print("FOR", number)
-            variable_type, variable_value = self.work_out_type(line, number, line_split[2])
-            value_type, value_value = self.work_out_type(line, number, line_split[-2])
+            variable_type, variable_value = self.work_out_type(line, number)
+            value_type, value_value = self.work_out_type(line, number)
 
             is_variable_a_variable = self.is_variable(line_split, variable_value)
             is_value_a_variable = self.is_variable(line_split, value_value)
             is_in = False
             in_what = ""
+            is_variable = False
 
+            value_content = ""
             value_from = 0
             value_to = 0
 
             self.variable_dictionary[variable_value] = {"type": variable_type, "value": None}
 
-            if "IN" in line:
+            if "IN" in line_split:
                 is_in = True
 
-            if "RANGE" in line:
+            if "RANGE" in line_split:
                 in_what = "RANGE"
                 try:
                     value_from = int(line_split[line_split.index("TO") - 1])
@@ -172,18 +191,42 @@ class Interpreter(object):
                     value_from = 0
                     value_to = int(line_split[-1])
 
+            elif value_type == "VARIABLE":
+                in_what = "VARIABLE"
+                is_variable = True
+
+            elif "STRING" in line_split:
+                in_what = "STRING"
+                value_content = " ".join(line_split[5:])[:-5]
+
             for count, item in self.read_lines_enum:
                 if item.startswith("ENDFOR"):
                     # self.quick_print("ENDFOR", count)
                     break
 
                 else:
-                    if in_what == "RANGE":
-                        for variable in range(value_from, value_to):
-                            self.variable_dictionary[variable_value]["value"] = variable
-                            self.syntax(item, count)
+                    if is_in:
+                        if in_what == "RANGE":
+                            for value in range(value_from, value_to):
+                                self.variable_dictionary[variable_value]["value"] = value
+                                self.syntax(item, count)
 
-                        del self.variable_dictionary[variable_value]
+                            del self.variable_dictionary[variable_value]
+
+                        elif in_what == "STRING":
+                            for character in value_content:
+                                self.variable_dictionary[variable_value]["value"] = character
+                                self.syntax(item, count)
+
+                            del self.variable_dictionary[variable_value]
+
+                        else:
+                            if is_variable:
+                                for value in self.variable_dictionary[value_value]["value"]:
+                                    self.variable_dictionary[variable_value]["value"] = value
+                                    self.syntax(item, count)
+
+                                del self.variable_dictionary[variable_value]
 
         # TODO: Add WHILE loops.
 
@@ -193,11 +236,13 @@ class Interpreter(object):
             variable_type = None
             variable_value = None
 
+            operator = "EQUALS"
+
             if "EQUALS" in line:
                 # self.quick_print("-EQUALS", number)
-                variable_type, variable_value = self.work_out_type(line, number, line_split[-1])
+                variable_type, variable_value = self.work_out_type(line, number)
 
-            self.variable_dictionary[variable_name] = {"type": variable_type, "value": variable_value}
+            self.variable_dictionary[variable_name] = {"type": variable_type, "value": " ".join(line_split[line_split.index(operator) + 2:])}
 
     def is_variable(self, line, value):
         if "VARIABLE" in line[line.index(str(value)) - 1]:
@@ -206,31 +251,102 @@ class Interpreter(object):
         else:
             return False
 
-    def work_out_type(self, line, number, variable_value):
-        variable_type = None
-        line_split = line.split(" ")
+    def work_out_type(self, line, number):
+        item_type = "NONE"
+        item_value = self.current_line_split
 
-        if "STRING" in line_split[line_split.index(variable_value) - 1]:
+        if "VARIABLE" in self.current_line_split:
+            # self.quick_print("--VARIABLE", number)
+            if not self.found_variable:
+                item_type = "VARIABLE"
+                item_value = self.current_line_split[self.current_line_split.index("VARIABLE") + 1]
+
+                del self.current_line_split[self.current_line_split.index("VARIABLE")]
+                self.found_variable = True
+
+            elif self.found_variable:
+                if not self.found_value:
+                    try:
+                        item_type = "VARIABLE"
+                        item_value = self.current_line_split[self.current_line_split.index("VARIABLE") + 1]
+
+                        self.found_value = True
+
+                    except ValueError:
+                        pass
+
+        elif "STRING" in self.current_line_split:
             # self.quick_print("--STRING", number)
-            variable_type = "STRING"
-            variable_value = str(variable_value)
+            if not self.found_variable:
+                item_type = "STRING"
+                item_value = str(self.current_line_split[self.current_line_split.index("STRING") + 1])
 
-        elif "INTEGER" in line_split[line_split.index(variable_value) - 1]:
+                del self.current_line_split[self.current_line_split.index("STRING")]
+                self.found_variable = True
+
+            elif self.found_variable:
+                if not self.found_value:
+                    try:
+                        item_type = "STRING"
+                        item_value = str(self.current_line_split[self.current_line_split.index("STRING") + 1])
+
+                        self.found_value = True
+
+                    except ValueError:
+                        pass
+
+        elif "INTEGER" in self.current_line_split:
             # self.quick_print("--INTEGER", number)
-            variable_type = "INTEGER"
-            variable_value = int(variable_value)
+            if not self.found_variable:
+                item_type = "INTEGER"
+                item_value = int(self.current_line_split[self.current_line_split.index("INTEGER") + 1])
 
-        elif "BOOLEAN" in line_split[line_split.index(variable_value) - 1]:
+            elif self.found_variable:
+                if not self.found_value:
+                    try:
+                        item_type = "INTEGER"
+                        item_value = int(self.current_line_split[self.current_line_split.index("INTEGER") + 1])
+
+                        self.found_value = True
+
+                    except ValueError:
+                        pass
+
+        elif "BOOLEAN" in self.current_line_split:
             # self.quick_print("--BOOLEAN", number)
-            variable_type = "BOOLEAN"
-            variable_value = bool(variable_value)
+            if not self.found_variable:
+                item_type = "BOOLEAN"
+                item_value = bool(self.current_line_split[self.current_line_split.index("BOOLEAN") + 1])
 
-        elif "FLOAT" in line_split[line_split.index(variable_value) - 1]:
+            elif self.found_variable:
+                if not self.found_value:
+                    try:
+                        item_type = "BOOLEAN"
+                        item_value = bool(self.current_line_split[self.current_line_split.index("BOOLEAN") + 1])
+
+                        self.found_value = True
+
+                    except ValueError:
+                        pass
+
+        elif "FLOAT" in self.current_line_split:
             # self.quick_print("--FLOAT", number)
-            variable_type = "FLOAT"
-            variable_value = float(variable_value)
+            if not self.found_variable:
+                item_type = "FLOAT"
+                item_value = float(self.current_line_split[self.current_line_split.index("FLOAT") + 1])
 
-        return variable_type, variable_value
+            elif self.found_variable:
+                if not self.found_value:
+                    try:
+                        item_type = "FLOAT"
+                        item_value = float(self.current_line_split[self.current_line_split.index("FLOAT") + 1])
+
+                        self.found_value = True
+
+                    except ValueError:
+                        pass
+
+        return item_type, item_value
 
     def quick_print(self, *args):
         print("{} on line: {}.".format(args[0], args[1] + 1))
