@@ -1,0 +1,36 @@
+%YAML 1.2
+---
+name: STRUCTLISH
+file_extensions:
+  - stre
+scope: source.stre
+
+contexts:
+  main:
+    # Comment:
+    - match: \b(COMMENT)\b
+      scope: keyword.comment.line.stre
+
+    # Keywords:
+    - match: \b(IF|FOR|ENDIF|ENDFOR|THEN|PASS|NEWLINE)\b
+      scope: keyword.control.stre
+
+    # Data Types:
+    - match: \b(VARIABLE|STRING|INTEGER|BOOLEAN|FLOAT)\b
+      scope: storage.type.stre
+
+    # Functions:
+    - match: \b(PRINT|RANGE)\b
+      scope: entity.name.function.stre
+
+    # Operators:
+    - match: \b(NOT|IN|IDENTICAL TO|MORE THAN|LESS THAN|TO)\b
+      scope: keyword.operator.stre
+
+    # Others:
+    - match: \b(PROGRAM|EXIT)\b
+      scope: keyword.other.stre
+
+    # Numbers
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.stre

@@ -17,6 +17,7 @@ However, if you look in the "Language Files", you'll find the language files I h
 #### Currently Supported Editors/IDEs:
 - Notepad++
 - UltraEdit
+- Sublime Text
 
 ## Basic Rules of STRUCTLISH:
 - A name must be provided at the top of the script.
@@ -43,9 +44,15 @@ The currently supported types are:
 ### Operators:
 The currently supported operators are:
 - `NOT`
+- `IN`
+
+
 - `IDENTICAL TO`
 - `MORE THAN`
 - `LESS THAN`
+
+
+- `TO`
 
 ### Comments:
 Comments may be used in STRUCTLISH. Both in-line and on their own line.
