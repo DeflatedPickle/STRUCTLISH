@@ -1,7 +1,7 @@
 PROGRAM EXAMPLE
 
-FOR VARIABLE character IN STRING hello world THEN
-    PRINT VARIABLE character
-ENDFOR
+IF STRING hello world IDENTICAL TO STRING hello world THEN
+	PRINT STRING You got it.
+ENDIF
 
 EXIT

@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 """"""
 
-from sys import exit
+import sys
 
 __title__ = "Interpreter"
 __author__ = "DeflatedPickle"
-__version__ = "1.8.2"
+__version__ = "1.9.1"
 
 
 class Interpreter(object):
@@ -17,6 +17,12 @@ class Interpreter(object):
         self.read_lines_stripped = [line.strip("\n") for line in self.read_lines]
 
         self.read_lines_enum = enumerate(self.read_lines_stripped)
+
+        self.language_syntax = {"keywords": ["IF", "ENDIF", "FOR", "ENDFOR", "THEN", "PASS", "NEWLINE"],
+                                "data_types": ["VARIABLE", "STRING", "INTEGER", "BOOLEAN", "FLOAT"],
+                                "functions": ["PRINT", "RANGE"],
+                                "operators": ["NOT", "IN", "IDENTICAL", "TO", "MORE", "LESS", "THAN", "TO"],
+                                "others": ["PROGRAM", "EXIT"]}
 
         self.flag_start = False
 
@@ -35,7 +41,11 @@ class Interpreter(object):
 
     def main_loop(self):
         for count, item in self.read_lines_enum:
-            self.syntax(item, count)
+            try:
+                self.syntax(item, count)
+            except:
+                e = sys.exc_info()[0]
+                print("\033[1;31m" + "\nException: {}, Line: {} - {}".format(e, count, item.strip()) + "\033[0;0m")
             # print(count + 1, item)
 
     def syntax(self, line, number):
@@ -64,7 +74,7 @@ class Interpreter(object):
         if line.startswith("EXIT"):
             # self.quick_print("EXIT", number)
             print("\nFinished Interpreting: {}.".format(self.metadata["name"]))
-            exit()
+            sys.exit()
 
         elif "PASS" in line:
             # self.quick_print("PASS", number)
@@ -92,6 +102,8 @@ class Interpreter(object):
             # self.quick_print("IF", number)
             variable_type, variable_value = self.work_out_type(line, number)
             value_type, value_value = self.work_out_type(line, number)
+
+            print("Variable Type: {}\nVariable Value: {}\n\nValue Type: {}\nValue Value: {}\n".format(variable_type, variable_value, value_type, value_value))
 
             is_variable_a_variable = self.is_variable(line_split, variable_value)
             is_value_a_variable = self.is_variable(line_split, value_value)
@@ -166,8 +178,6 @@ class Interpreter(object):
             variable_type, variable_value = self.work_out_type(line, number)
             value_type, value_value = self.work_out_type(line, number)
 
-            is_variable_a_variable = self.is_variable(line_split, variable_value)
-            is_value_a_variable = self.is_variable(line_split, value_value)
             is_in = False
             in_what = ""
             is_variable = False
@@ -232,7 +242,7 @@ class Interpreter(object):
 
         elif "VARIABLE" in line:
             # self.quick_print("VARIABLE", number)
-            variable_name = line_split[1]
+            variable_name = line_split[line_split.index("VARIABLE") + 1]
             variable_type = None
             variable_value = None
 
@@ -240,9 +250,35 @@ class Interpreter(object):
 
             if "EQUALS" in line:
                 # self.quick_print("-EQUALS", number)
+                operator = "EQUALS"
                 variable_type, variable_value = self.work_out_type(line, number)
 
-            self.variable_dictionary[variable_name] = {"type": variable_type, "value": " ".join(line_split[line_split.index(operator) + 2:])}
+                self.variable_dictionary[variable_name] = {"type": variable_type, "value": " ".join(line_split[line_split.index(operator) + 2:]), "value_type": line_split[line_split.index(operator) + 1]}
+
+            elif "PLUS" in line:
+                operator = "PLUS"
+                if self.variable_dictionary[variable_name]["value_type"] == "INTEGER":
+                    self.variable_dictionary[variable_name]["value"] = int(self.variable_dictionary[variable_name]["value"]) + int(line_split[line_split.index(operator) + 2])
+
+            elif "MINUS" in line:
+                operator = "MINUS"
+                if self.variable_dictionary[variable_name]["value_type"] == "INTEGER":
+                    self.variable_dictionary[variable_name]["value"] = int(self.variable_dictionary[variable_name]["value"]) - int(line_split[line_split.index(operator) + 2])
+
+            elif "MULTIPLY" in line:
+                operator = "MULTIPLY"
+                if self.variable_dictionary[variable_name]["value_type"] == "INTEGER":
+                    self.variable_dictionary[variable_name]["value"] = int(self.variable_dictionary[variable_name]["value"]) * int(line_split[line_split.index(operator) + 2])
+
+            elif "DIVIDE" in line:
+                operator = "DIVIDE"
+                if self.variable_dictionary[variable_name]["value_type"] == "INTEGER":
+                    self.variable_dictionary[variable_name]["value"] = int(self.variable_dictionary[variable_name]["value"]) // int(line_split[line_split.index(operator) + 2])
+
+            elif "MODULUS" in line:
+                operator = "MODULUS"
+                if self.variable_dictionary[variable_name]["value_type"] == "INTEGER":
+                    self.variable_dictionary[variable_name]["value"] = int(self.variable_dictionary[variable_name]["value"]) % int(line_split[line_split.index(operator) + 2])
 
     def is_variable(self, line, value):
         if "VARIABLE" in line[line.index(str(value)) - 1]:

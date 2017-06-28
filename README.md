@@ -23,7 +23,7 @@ However, if you look in the "Language Files", you'll find the language files I h
 ## Basic Rules of STRUCTLISH:
 - A name must be provided at the top of the script.
 - Keywords must be capitalised.
-- `IF` statements must have an ENDIF below them.
+- `IF` statements must have an `ENDIF` below them.
 - A data type must be declared before the data.
 - An `EXIT` must be provided at the end of the script.
 
@@ -124,7 +124,7 @@ Output:
 ```
 PROGRAM EXAMPLE
 
-VARIABLE my_variable EQUALS 3
+VARIABLE my_variable EQUALS INTEGER 3
 
 IF INTEGER 3 IDENTICAL TO VARIABLE my_variable THEN
 	PRINT STRING This number is identical to this variable.
