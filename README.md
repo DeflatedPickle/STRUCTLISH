@@ -1,5 +1,5 @@
 # STRUCTLISH
-A slightly modified version of Structured English written in Python.
+A slightly modified version of [Structured English](https://en.wikipedia.org/wiki/Structured_English) written in Python.
 
 ## What Is STRUCTLISH?
 STRUCTLISH is a simple esoteric programming language designed to be easy to read and understand.
