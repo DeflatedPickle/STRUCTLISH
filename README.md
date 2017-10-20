@@ -1,5 +1,5 @@
 # STRUCTLISH
-A slightly modified version of Structured English written in Python.
+A slightly modified version of Structured English meant for educational use.
 
 ## What Is STRUCTLISH?
 STRUCTLISH is a simple esoteric programming language designed to be easy to read and understand.
@@ -46,6 +46,7 @@ It can't be used yet.
 - `LESS THAN`
 
 ### Comments:
+Comments are removed before the rest of the code is parsed.
 - `*This is a comment.` - End of line/New line.
 - `*This is a comment.*` - In-Code.
 
