@@ -3,12 +3,18 @@ A slightly modified version of Structured English meant for educational use.
 
 ## What Is STRUCTLISH?
 STRUCTLISH is a simple esoteric programming language designed to be easy to read and understand.
-It follows many of the rules of Structured English, and is inspired by it.
+It follows many of the rules of Structured English.
 ### Inspirations:
 Structured English, BASIC, COBOL, Python, Ruby.
 
 ## Using STRUCTLISH:
 It can't be used yet.
+### File Extensions:
+- `.structlish`
+- `.struct`
+- `.structlsh`
+- `.structlang`
+- `.struc`
 
 ## Basic Rules of STRUCTLISH:
 - A name must be provided at the top of the script.
@@ -62,3 +68,7 @@ Comments are removed before the rest of the code is parsed.
 ##### Loops:
 - `FOR` - Loops until it has reached the value.
 - `WHILE` - Loops until the value is False.
+
+### Methods:
+- `FUNCTION` - Takes arguments, returns value based on those arguments.
+- `PROCEDURE` - Takes arguments, performs actions based on those arguments.
