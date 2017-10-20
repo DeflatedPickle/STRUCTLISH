@@ -19,8 +19,19 @@ class Interpreter(object):
         tokens = self.lexer(file)
         self.parse(tokens)
 
-    def lexer(self, file):
-        return ""
+    def lexer(self, file_contents):
+        file_contents = list(file_contents)
+        token_list = []
+
+        token = ""
+
+        for character in file_contents:
+            token += character
+
+            if token == " ":
+                token = ""
+
+        return token_list
 
     def parse(self, tokens):
         pass
@@ -38,3 +49,7 @@ if __name__ == "__main__":
         run(sys.argv[1])
     except IndexError:
         run("../tests/print.structlish")
+
+
+
+
